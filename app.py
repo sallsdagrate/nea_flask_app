@@ -157,9 +157,20 @@ def upload(userid):
             path = ''
             if userid == 0:
                 path = '/static/guestimage.png'
-                # img_to_delete = Images.user_id.like('0')
-                # db.session.delete(img_to_delete)
-                # db.session.commit()
+                img_to_delete = Images.query.filter(
+                    Images.user_id.like(0)).all()
+                print(img_to_delete)
+                # for img in img_to_delete:
+                #         db.session.delete(img)
+                #         db.session.commit()
+                # if len(img_to_delete) == 1:
+                #     db.session.delete(img_to_delete)
+                #     db.session.commit()
+
+                # elif len(img_to_delete) > 1:
+                #     for img in img_to_delete:
+                #         db.session.delete(img)
+                #         db.session.commit()
             else:
                 path = '/static/' + str(userid) + 'image.png'
 
