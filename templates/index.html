@@ -1,0 +1,59 @@
+<!-- takes the format of base.html -->
+{% extends 'base.html' %}
+
+{% block head %} 
+<title>Create Account</title>
+{% endblock %}
+
+{% block body %} 
+<!-- basic stuff in the body -->
+<div class=login>
+    <!-- title -->
+    <h1>ADMIN INDEX</h1>
+
+    <!-- link to the login page -->
+    <a href='/login'>login</a>
+    <a href='/upload/0'>upload image</a>
+    <!-- table for the current usernames and passwords -->
+    <table>
+        <!-- titles -->
+        <tr>
+            <th>id</th>
+            <th>username</th>
+            <th>password</th>
+            <th>email</th>
+            <!-- <th>date</th > -->
+            <th>actions</th>
+        </tr>
+        <!-- for each user -->
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.password }}</td>
+                <td>{{ user.email }}</td>
+                <!-- <td>{{ user.dateAdded }}</td> -->
+                <td>
+                    <!-- links to update and delete user -->
+                    <a href="/delete/{{user.id}}">Delete</a>
+                    <br>
+                    <a href="/update/{{user.id}}">Update</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <!-- form to add a user -->
+    <form action='/' method="POST">
+        <a>username</a>
+        <input type="text" name='username' id='username'>
+        <!-- <br> -->
+        <a>password</a>
+        <input type='text' name='password' id='password'>
+        <!-- <br> -->
+        <a>email</a>
+        <input type='text' name='email' id='email'>
+        <!-- <br> -->
+        <input type='submit' value='Add user'>
+    </form>
+</div>
+{% endblock %}

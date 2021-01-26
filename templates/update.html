@@ -1,0 +1,19 @@
+<!-- takes the format of base.html -->
+{% extends 'base.html' %}
+
+{% block head %} 
+<title>Create Account</title>
+{% endblock %}
+
+{% block body %} 
+<!-- basic stuff in the body -->
+<div class=login>
+    <h1>UPDATE</h1>
+    <!-- form sends back to update [post] -->
+    <form action='/update/{{ user.id }}' method="POST">
+        <input type="text" name='username' id='username' value="{{ user.username }}">
+        <input type='text' name='password' id='password' value="{{ user.password }}">
+        <input type='submit' value='Update user'>
+    </form>
+</div>
+{% endblock %}
