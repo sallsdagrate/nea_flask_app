@@ -35,9 +35,10 @@ class Users(db.Model):
 class Images(db.Model):
     __bind_key__ = 'images'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey('Users.id'), nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey(Users.id), nullable=True)
     image_path = db.Column(db.String(200), nullable=False)
-    
+    date_time_added = db.Column(db.String(10))
+
     def __repr__(self):
         return '<Image %r>' % self.id
 
@@ -72,8 +73,9 @@ def index():
         
         # if not a post method, retrieve all the current users
         users = Users.query.all()
+        images = Images.query.all()
         # render index.html
-        return render_template('index.html', users=users)
+        return render_template('index.html', users=users, images=images)
 
 @app.route('/delete/<int:id>')
 def delete(id):
@@ -155,10 +157,20 @@ def upload(userid):
             path = ''
             if userid == 0:
                 path = '/static/guestimage.png'
+                # img_to_delete = Images.user_id.like('0')
+                # db.session.delete(img_to_delete)
+                # db.session.commit()
             else:
                 path = '/static/' + str(userid) + 'image.png'
 
             img.save('.' + path)
+
+            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            new_image = Images(user_id=userid, image_path=path, date_time_added=now)
+
+            db.session.add(new_image)
+            db.session.commit()
+
             return render_template('show_image.html', 
                 user=Users.query.get(userid), 
                 url=str('..' + path)
@@ -166,10 +178,6 @@ def upload(userid):
 
     return render_template('/upload.html', userid=userid)
 
-@app.after_request
-def add_header(response):
-    response.headers['Cache-Control'] = 'public, max-age=0'
-    return response
 
 # if an error, use inbuilt error debugging tool
 if __name__ == '__main__':

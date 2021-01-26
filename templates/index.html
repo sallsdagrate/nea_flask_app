@@ -42,6 +42,7 @@
             </tr>
         {% endfor %}
     </table>
+    
     <!-- form to add a user -->
     <form action='/' method="POST">
         <a>username</a>
@@ -55,5 +56,24 @@
         <!-- <br> -->
         <input type='submit' value='Add user'>
     </form>
+    <table>
+        <!-- titles -->
+        <tr>
+            <th>id</th>
+            <th>user id</th>
+            <th>image path</th>
+            <th>date time</th>
+            <!-- <th>date</th > -->
+        </tr>
+        <!-- for each user -->
+        {% for image in images %}
+            <tr>
+                <td>{{ image.id }}</td>
+                <td>{{ image.user_id }}</td>
+                <td>{{ image.image_path }}</td>
+                <td>{{ image.date_time_added }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 </div>
 {% endblock %}
