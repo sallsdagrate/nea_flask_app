@@ -6,6 +6,12 @@
 
 {% block body %} 
 <h1>Uploaded</h1>
-<a href="/">return</a>
-<img src={{url}}>
+{% if userid == 0 %}
+    <div><a href="/">return to index</a></div>
+{% elif user_id != 0 %}
+    {% set returnurl = '/user/' + userid %}
+    <div><a href={{returnurl}}>return</a></div>
+{% endif %}
+
+<div><img src={{url}}></div>
 {% endblock %}

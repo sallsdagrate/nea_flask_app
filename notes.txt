@@ -1,2 +1,4 @@
 - show_image system
 - images database
+- showing each users images in their profile
+- guest can only have one image at a time, records of adding to the database are kept but image overwritten

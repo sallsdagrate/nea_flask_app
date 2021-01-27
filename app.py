@@ -27,6 +27,7 @@ class Users(db.Model):
     username = db.Column(db.String(200), nullable=False)
     password = db.Column(db.String(200), nullable=False)
     email = db.Column(db.String(200), nullable=True)
+    pfp_path = db.Column(db.String(200), nullable = True)
     # date_added = db.Column(db.String(10))
 
     def __repr__(self):
@@ -58,8 +59,12 @@ def index():
         new_email = request.form['email']
 
         # create a new user
-        new_user = Users(username=new_username, password=new_password, email=new_email)
-
+        new_user = Users(
+            username=new_username, 
+            password=new_password, 
+            email=new_email,
+            pfp_path=None
+            )
         try:
             # try adding to the database
             db.session.add(new_user)
@@ -102,7 +107,7 @@ def update(id):
         # change the usernames and passwords to new inputs
         user_to_update.username = request.form['username']
         user_to_update.password = request.form['password']
-    
+        user_to_update.email = request.form['email']
         try:
             # commit and redirect to user page signed in
             db.session.commit()
@@ -136,7 +141,15 @@ def login():
 
 @app.route('/user/<int:userid>')
 def user(userid):
-    return render_template('user.html', user=Users.query.get(userid))
+    if userid == 0:
+        images = [Images.query.filter(
+        Images.user_id.like(userid)
+        ).order_by(Images.date_time_added.desc()).first()]
+    else:
+        images = Images.query.filter(
+        Images.user_id.like(userid)
+    ).all()
+    return render_template('user.html', user=Users.query.get(userid), images=images)
 
 @app.route('/show_image')
 def show_image():
@@ -157,9 +170,9 @@ def upload(userid):
             path = ''
             if userid == 0:
                 path = '/static/guestimage.png'
-                img_to_delete = Images.query.filter(
-                    Images.user_id.like(0)).all()
-                print(img_to_delete)
+                # img_to_delete = Images.query.filter(
+                #     Images.user_id.like(0)).all()
+                # print(img_to_delete)
                 # for img in img_to_delete:
                 #         db.session.delete(img)
                 #         db.session.commit()
@@ -172,8 +185,12 @@ def upload(userid):
                 #         db.session.delete(img)
                 #         db.session.commit()
             else:
-                path = '/static/' + str(userid) + 'image.png'
-
+                images = Images.query.filter(
+                    Images.user_id.like(userid)
+                ).all()
+                count = len(images)
+                path = '/static/%s_%s_image.png' % (str(userid), count)
+            
             img.save('.' + path)
 
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -181,14 +198,15 @@ def upload(userid):
 
             db.session.add(new_image)
             db.session.commit()
-
+            print(path)
             return render_template('show_image.html', 
-                user=Users.query.get(userid), 
+                userid=str(userid), 
                 url=str('..' + path)
                 )
 
     return render_template('/upload.html', userid=userid)
 
+# @app.route
 
 # if an error, use inbuilt error debugging tool
 if __name__ == '__main__':
