@@ -38,11 +38,12 @@ class Images(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(Users.id), nullable=True)
     image_path = db.Column(db.String(200), nullable=False)
+    scan_image_path = db.Column(db.String(200), nullable=True)
+    notes = db.Column(db.String(200), nullable=True)
     date_time_added = db.Column(db.String(10))
 
     def __repr__(self):
         return '<Image %r>' % self.id
-
 
 
 
@@ -87,14 +88,25 @@ def delete(id):
 
     # find the user by id
     user_to_delete= Users.query.get_or_404(id)
-
-    try:
+    images_to_delete= Images.query.filter(
+        Images.user_id.like(id)
+    ).all()
+    print(images_to_delete)
+    print(len(images_to_delete))
+    # try:
         # delete the user
-        db.session.delete(user_to_delete)
-        db.session.commit()
-        return redirect('/')
-    except:
-        return 'problem deleting user '
+    db.session.delete(user_to_delete)
+    # db.session.delete(images_to_delete)
+    if len(images_to_delete) == 0:
+        pass
+    else:
+        for image in images_to_delete:
+            db.session.delete(image)
+    
+    db.session.commit()
+    return redirect('/')
+    # except:
+    #     return 'problem deleting user '
 
 @app.route('/update/<int:id>', methods=['POST', 'GET'])
 def update(id):
@@ -149,7 +161,7 @@ def user(userid):
         images = Images.query.filter(
         Images.user_id.like(userid)
     ).all()
-    return render_template('user.html', user=Users.query.get(userid), images=images, )
+    return render_template('user.html', user=Users.query.get(userid), images=images)
 
 @app.route('/show_image')
 def show_image():
@@ -210,21 +222,37 @@ def upload(userid):
             img.save('.' + path)
 
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            new_image = Images(user_id=userid, image_path=path, date_time_added=now)
+            new_image = Images(
+                user_id=userid, 
+                image_path=path, 
+                scan_image_path='', 
+                notes='',
+                date_time_added=now)
 
             db.session.add(new_image)
             db.session.commit()
             print(path)
             return render_template('show_image.html', 
                 userid=str(userid), 
-                url=str('..' + path)
+                image_path=path,
                 )
 
     return render_template('/upload.html', userid=userid)
 
 @app.route('/view/<int:userid>/<int:scanid>')
-def view(userid, image_path):
+def view(userid, scanid):
     return render_template('view_scan.html', user=Users.query.get_or_404(userid), scan=Images.query.get_or_404(scanid))
+
+@app.route('/update_scan/<int:userid>/<int:scanid>',  methods=['POST', 'GET'])
+def update_scan(userid, scanid):
+    if request.method == 'POST':
+        scan_to_update = Images.query.get_or_404(scanid)
+        scan_to_update.notes = request.form['notes']
+        db.session.commit()
+        return redirect('/user/%r' % userid)
+    else:
+        return render_template(userid=userid, scanid=scanid, scan=Images.query.get_or_404(scanid))
+
 
 # if an error, use inbuilt error debugging tool
 if __name__ == '__main__':

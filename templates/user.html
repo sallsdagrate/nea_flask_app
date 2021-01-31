@@ -14,14 +14,14 @@
 <!-- basic stuff in the body -->
 {% if user.username %}
     <h1>user : {{user.username}}</h1>
-    <h1>pswd : {{user.password}}</h1>
+    <!-- <h1>pswd : {{user.password}}</h1> -->
     <a href="/update/{{user.id}}">update account</a>
     <br>
     <br>
     <a href='/upload/{{user.id}}'>upload image</a>
 {% else %}
     <h1>user : guest</h1>
-    <h1>pswd : N/A</h1>
+    <!-- <h1>pswd : N/A</h1> -->
     <br>
     <a href='/upload/0'>upload image</a>
 {% endif %}
@@ -31,29 +31,41 @@
 <br>
 
 
-<form action='/update/{{ user.id }}' method="POST"></form>
+<!-- <form action='/update/{{ user.id }}' method="POST"></form> -->
 
-<table>
-    <tr>
-        <th>datetime</th>
-        <th>images</th>
-        {% if images %}
-            {% if images|length == 0 %}
-                <tr>
-                    {% set source = '..' + images.image_path %}
-                    <td>{{images.date_time_added}}</td>
-                    <td><image src='{{ source }}' width=300px href='/view/{{user.id}}/{{images.id}}'></td>
-                </tr>
-            {% else %}
-                {% for image in images %}
+<div class='form_container'>
+    <table>
+        <tr>
+            <th>datetime</th>
+            <th>images</th>
+            <th>notes</th>
+            <th>actions</th>
+            {% if images %}
+                {% if images|length == 0 %}
                     <tr>
-                        {% set source = '..' + image.image_path %}
-                        <td>{{image.date_time_added}}</td>
-                        <td><image src='{{ source }}'' href='/view/{{user.id}}/{{images.id}}' width=300></td>
+                        {% set source = '..' + images.image_path %}
+                        <td>{{images.date_time_added}}</td>
+                        <td><image src='{{ source }}' width=300px href='/view/{{user.id}}/{{images.id}}'></td>
+                        <td>{{images.notes}}</td>
+                        <td><a href='/update_scan/{{user.id}}/{{image.id}}'>update</a></td>
                     </tr>
-                {% endfor %}   
+                {% else %}
+                    {% for image in images %}
+                        <tr>
+                            {% set source = '..' + image.image_path %}
+                            <td>{{image.date_time_added}}</td>
+                            <td>
+                                <a href='/view/{{user.id}}/{{image.id}}'>
+                                    <image src='{{ source }}' width=300></image>
+                                </a>
+                            </td>
+                            <td>{{image.notes}}</td>
+                            <td><a href='/update_scan/{{user.id}}/{{image.id}}'>update</a></td>
+                        </tr>
+                    {% endfor %}   
+                {% endif %}
             {% endif %}
-        {% endif %}
-    </tr>
-</table>
+        </tr>
+    </table>
+</div>
 {% endblock %}

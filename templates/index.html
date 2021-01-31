@@ -13,35 +13,39 @@
 
     <!-- link to the login page -->
     <a href='/login'>login</a>
+    <br>
     <a href='/upload/0'>upload image</a>
+    <br>
     <!-- table for the current usernames and passwords -->
-    <table>
-        <!-- titles -->
-        <tr>
-            <th>id</th>
-            <th>username</th>
-            <th>password</th>
-            <th>email</th>
-            <!-- <th>date</th > -->
-            <th>actions</th>
-        </tr>
-        <!-- for each user -->
-        {% for user in users %}
+    <div class="tbl_container">
+        <table>
+            <!-- titles -->
             <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.password }}</td>
-                <td>{{ user.email }}</td>
-                <!-- <td>{{ user.dateAdded }}</td> -->
-                <td>
-                    <!-- links to update and delete user -->
-                    <a href="/delete/{{user.id}}">Delete</a>
-                    <br>
-                    <a href="/update/{{user.id}}">Update</a>
-                </td>
+                <th>id</th>
+                <th>username</th>
+                <th>password</th>
+                <th>email</th>
+                <!-- <th>date</th > -->
+                <th>actions</th>
             </tr>
-        {% endfor %}
-    </table>
+            <!-- for each user -->
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.password }}</td>
+                    <td>{{ user.email }}</td>
+                    <!-- <td>{{ user.dateAdded }}</td> -->
+                    <td>
+                        <!-- links to update and delete user -->
+                        <a href="/delete/{{user.id}}">Delete</a>
+                        <br>
+                        <a href="/update/{{user.id}}">Update</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
     
     <!-- form to add a user -->
     <div class='form_container'>
@@ -66,24 +70,30 @@
         </form>
     </div>
     
-    <table>
-        <!-- titles -->
-        <tr>
-            <th>id</th>
-            <th>user id</th>
-            <th>image path</th>
-            <th>date time</th>
-            <!-- <th>date</th > -->
-        </tr>
-        <!-- for each user -->
-        {% for image in images %}
+    <div class="tbl_container">
+        <table>
+            <!-- titles -->
             <tr>
-                <td>{{ image.id }}</td>
-                <td>{{ image.user_id }}</td>
-                <td>{{ image.image_path }}</td>
-                <td>{{ image.date_time_added }}</td>
+                <th>id</th>
+                <th>user id</th>
+                <th>image path</th>
+                <th>scan image path</th> 
+                <th>notes</th>
+                <th>date time</th>
+                <!-- <th>date</th > -->
             </tr>
-        {% endfor %}
-    </table>
+            <!-- for each user -->
+            {% for image in images %}
+                <tr>
+                    <td>{{ image.id }}</td>
+                    <td>{{ image.user_id }}</td>
+                    <td>{{ image.image_path }}</td>
+                    <td>{{ image.scan_image_path }}</td>
+                    <td>{{ image.notes }}</td>
+                    <td>{{ image.date_time_added }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 </div>
 {% endblock %}
