@@ -1,10 +1,62 @@
 /* light css styling */
 body {
-  margin: 0;
+  /* margin: 0; */
   font-family: sans-serif;
+  /* display: flex; */
   text-align: center;
+  /* align-items: center; */
+  /* display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center; */
+  /* min-height: 100vh; */
+}
+table,
+th,
+td {
+  border: 1px solid black;
+  width: 80%;
 }
 
-h1 {
-  text-align: center;
+input[type="text"],
+select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
+
+input[type="submit"] {
+  width: 100%;
+  background-color: #4c74af;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: #5645a0;
+}
+
+.form_container {
+  width: 30%;
+  padding: 10px;
+  padding-right: 20px;
+  padding-left: 20px;
+  border-radius: 5%;
+
+  /* border-style: solid;
+  border-color: #4c74af; */
+}
+
+/* .tbl_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+} */

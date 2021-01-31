@@ -1,0 +1,15 @@
+<!-- takes the format of base.html -->
+{% extends 'base.html' %}
+
+{% block head %} 
+<title>view</title>
+{% endblock %}
+
+{% block body %} 
+
+<h1>user: {{user.username}}</h1>
+<h2>scan: {{scan.date_time_added}}</h2>
+{% set source = '' + scan.image_path %}
+<img src={{scan.image_path}} width='80%'>
+
+{% endblock %}
