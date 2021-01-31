@@ -2,7 +2,9 @@
 body {
   margin: 0;
   font-family: sans-serif;
+  /* display: flex; */
   text-align: center;
+  align-items: center;
 }
 
 h1 {
@@ -22,7 +24,7 @@ select {
 
 input[type="submit"] {
   width: 100%;
-  background-color: #4caf50;
+  background-color: #4c74af;
   color: white;
   padding: 14px 20px;
   margin: 8px 0;
@@ -32,5 +34,16 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-  background-color: #45a049;
+  background-color: #5645a0;
+}
+
+.form_container {
+  width: 30%;
+  padding: 10px;
+  padding-right: 20px;
+  padding-left: 20px;
+  border-radius: 5%;
+
+  border-style: solid;
+  border-color: #4c74af;
 }

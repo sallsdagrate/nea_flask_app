@@ -2,3 +2,8 @@
 - images database
 - showing each users images in their profile
 - guest can only have one image at a time, records of adding to the database are kept but image overwritten
+
+errors:
+- Guest user profile
+- If statements for displaying things in guest user, jinja syntax
+- Trying to only have one image show up for guest

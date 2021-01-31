@@ -42,14 +42,14 @@
                 <tr>
                     {% set source = '..' + images.image_path %}
                     <td>{{images.date_time_added}}</td>
-                    <td><image src='{{ source }}' width=100px></td>
+                    <td><image src='{{ source }}' width=300px href='/view/{{user.id}}/{{images.id}}'></td>
                 </tr>
             {% else %}
                 {% for image in images %}
                     <tr>
                         {% set source = '..' + image.image_path %}
                         <td>{{image.date_time_added}}</td>
-                        <td><image src='{{ source }}' width=100px></td>
+                        <td><image src='{{ source }}'' href='/view/{{user.id}}/{{images.id}}' width=300></td>
                     </tr>
                 {% endfor %}   
             {% endif %}

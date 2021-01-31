@@ -8,8 +8,11 @@
 {% block body %} 
 <!-- basic stuff in the body -->
 <h1>Upload new File</h1>
-<form action='/upload/{{userid}}'  method=post enctype=multipart/form-data>
-   <input type=file  accept="image/*" name=file>
-   <input type=submit value=Upload>
-</form>
+<div class='form_container'>
+   <form action='/upload/{{userid}}'  method=post enctype=multipart/form-data>
+      <input type=file  accept="image/*" name=file>
+      <input type=submit value=Upload>
+   </form>
+</div>
+
 {% endblock %}

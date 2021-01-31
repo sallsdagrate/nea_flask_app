@@ -149,7 +149,7 @@ def user(userid):
         images = Images.query.filter(
         Images.user_id.like(userid)
     ).all()
-    return render_template('user.html', user=Users.query.get(userid), images=images)
+    return render_template('user.html', user=Users.query.get(userid), images=images, )
 
 @app.route('/show_image')
 def show_image():
@@ -167,9 +167,25 @@ def upload(userid):
         if file:
 
             img = Image.open(file)
+            width, height = img.size
+            if img.size != (512, 512):
+                print(img.size)
+                # img = img.resize((512, 512))
+                new_width, new_height = (512, 512)
+                left = (width - new_width)/2
+                top = (height - new_height)/2
+                right = (width + new_width)/2
+                bottom = (height + new_height)/2
+
+                # Crop the center of the image
+                img = img.crop((left, top, right, bottom))
+            elif width < 256 or height < 256:
+                print(img.size, 'too smol')
+                
+
             path = ''
             if userid == 0:
-                path = '/static/guestimage.png'
+                path = '/static/images/guestimage.png'
                 # img_to_delete = Images.query.filter(
                 #     Images.user_id.like(0)).all()
                 # print(img_to_delete)
@@ -189,7 +205,7 @@ def upload(userid):
                     Images.user_id.like(userid)
                 ).all()
                 count = len(images)
-                path = '/static/%s_%s_image.png' % (str(userid), count)
+                path = '/static/images/%s_%s_image.png' % (str(userid), count)
             
             img.save('.' + path)
 
@@ -206,8 +222,23 @@ def upload(userid):
 
     return render_template('/upload.html', userid=userid)
 
-# @app.route
+@app.route('/view/<int:userid>/<int:scanid>')
+def view(userid, image_path):
+    return render_template('view_scan.html', user=Users.query.get_or_404(userid), scan=Images.query.get_or_404(scanid))
 
 # if an error, use inbuilt error debugging tool
 if __name__ == '__main__':
     app.run(debug=True)
+
+# @app.context_processor
+# def override_url_for():
+#     return dict(url_for=dated_url_for)
+
+# def dated_url_for(endpoint, **values):
+#     if endpoint == 'static':
+#         filename = values.get('filename', None)
+#         if filename:
+#             file_path = os.path.join(app.root_path,
+#                                  endpoint, filename)
+#             values['q'] = int(os.stat(file_path).st_mtime)
+#     return url_for(endpoint, **values)
