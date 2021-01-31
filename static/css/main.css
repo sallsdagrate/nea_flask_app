@@ -51,8 +51,8 @@ input[type="submit"]:hover {
   padding-left: 20px;
   border-radius: 5%;
 
-  border-style: solid;
-  border-color: #4c74af;
+  /* border-style: solid;
+  border-color: #4c74af; */
 }
 
 /* .tbl_container {

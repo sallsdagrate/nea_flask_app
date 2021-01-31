@@ -91,8 +91,8 @@ def delete(id):
     images_to_delete= Images.query.filter(
         Images.user_id.like(id)
     ).all()
-    print(images_to_delete)
-    print(len(images_to_delete))
+    # print(images_to_delete)
+    # print(len(images_to_delete))
     # try:
         # delete the user
     db.session.delete(user_to_delete)
@@ -243,15 +243,15 @@ def upload(userid):
 def view(userid, scanid):
     return render_template('view_scan.html', user=Users.query.get_or_404(userid), scan=Images.query.get_or_404(scanid))
 
-@app.route('/update_scan/<int:userid>/<int:scanid>',  methods=['POST', 'GET'])
-def update_scan(userid, scanid):
+@app.route('/update_scan/<int:scanid>',  methods=['POST', 'GET'])
+def update_scan(scanid):
     if request.method == 'POST':
         scan_to_update = Images.query.get_or_404(scanid)
         scan_to_update.notes = request.form['notes']
         db.session.commit()
-        return redirect('/user/%r' % userid)
+        return redirect('/user/%r' % scan_to_update.user_id)
     else:
-        return render_template(userid=userid, scanid=scanid, scan=Images.query.get_or_404(scanid))
+        return render_template('update_scan.html', scan=Images.query.get_or_404(scanid))
 
 
 # if an error, use inbuilt error debugging tool

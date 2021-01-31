@@ -47,7 +47,7 @@
                         <td>{{images.date_time_added}}</td>
                         <td><image src='{{ source }}' width=300px href='/view/{{user.id}}/{{images.id}}'></td>
                         <td>{{images.notes}}</td>
-                        <td><a href='/update_scan/{{user.id}}/{{image.id}}'>update</a></td>
+                        <td><a href='/update_scan/{{image.id}}'>update</a></td>
                     </tr>
                 {% else %}
                     {% for image in images %}
@@ -60,7 +60,7 @@
                                 </a>
                             </td>
                             <td>{{image.notes}}</td>
-                            <td><a href='/update_scan/{{user.id}}/{{image.id}}'>update</a></td>
+                            <td><a href='/update_scan/{{image.id}}'>update</a></td>
                         </tr>
                     {% endfor %}   
                 {% endif %}
