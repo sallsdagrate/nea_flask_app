@@ -4,7 +4,7 @@
 - guest can only have one image at a time, records of adding to the database are kept but image overwritten
 - clicking an image to open it
 - css
-- 
+- notes
 
 errors:
 - Guest user profile

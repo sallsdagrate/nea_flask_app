@@ -8,8 +8,10 @@ import time
 # instantiate the app as a flask app
 app= Flask(__name__)
 
-# tell the app where the database is
+# tell the app where the main database is
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main_db.db'
+
+# main db is split into users and images. The main_db maps them together for us
 app.config['SQLALCHEMY_BINDS'] = {
     'users': 'sqlite:///users.db',
     'images': 'sqlite:///images.db'
@@ -20,12 +22,17 @@ db = SQLAlchemy(app)
 
 # creating login table class, pass in db model
 class Users(db.Model):
+
+    # binded to the users section of the overall database
     __bind_key__ = 'users'
     # primary id key for each user
     id = db.Column(db.Integer, primary_key=True)
+
     # username and passwords, required=True for both, necessary fields
     username = db.Column(db.String(200), nullable=False)
     password = db.Column(db.String(200), nullable=False)
+
+    # other attributes
     email = db.Column(db.String(200), nullable=True)
     pfp_path = db.Column(db.String(200), nullable = True)
     # date_added = db.Column(db.String(10))
@@ -34,9 +41,15 @@ class Users(db.Model):
         return '<User %r>' % self.id
 
 class Images(db.Model):
+
+    # binded to the images part of the overall db
     __bind_key__ = 'images'
+    # primary id key for each image
     id = db.Column(db.Integer, primary_key=True)
+    # foreign key user_id, binded to 'id' in the Users table
     user_id = db.Column(db.Integer, ForeignKey(Users.id), nullable=True)
+
+    # other attributes
     image_path = db.Column(db.String(200), nullable=False)
     scan_image_path = db.Column(db.String(200), nullable=True)
     notes = db.Column(db.String(200), nullable=True)
@@ -153,14 +166,23 @@ def login():
 
 @app.route('/user/<int:userid>')
 def user(userid):
+    # if ther user is a guest
     if userid == 0:
+        # images is a list with one item.
+        # the item is a return from an sql request where the one filter is
+        # userid. The results are ranked by date and time and only the 
+        # the first one is picked.
         images = [Images.query.filter(
         Images.user_id.like(userid)
         ).order_by(Images.date_time_added.desc()).first()]
     else:
+        # otherwise, we know there may be mulitple images
+        # we just request for all of the images under that userid 
+        # and return them all.
         images = Images.query.filter(
         Images.user_id.like(userid)
     ).all()
+    # pass images and user into the html render
     return render_template('user.html', user=Users.query.get(userid), images=images)
 
 @app.route('/show_image')
@@ -168,80 +190,106 @@ def show_image():
     return render_template('show_image.html')
 
 @app.route('/upload/<int:userid>',  methods=['POST', 'GET'])
+# we only need to know the user's id in order to save an image
 def upload(userid):
+
+    # if the page is sending a post request
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
+            # if there is no file at all then return this
             return 'didnt work'
+        # otherwise retrieve the file
         file = request.files['file']
+        # if the file name is blank then basically no file was selected.
+        # return back to the same page
         if file.filename == '':
-            return 'no file selected'
+            return redirect('/upload/' + str(userid))
+        
+        # if the file path is satisfactory then
         if file:
-
+            # open the image using pillow
             img = Image.open(file)
+            # find its dimensions
             width, height = img.size
+            # if the file is not standard size
             if img.size != (512, 512):
                 print(img.size)
+                # then either resixe the image or...
                 # img = img.resize((512, 512))
+
+                # Crop the center of the image
                 new_width, new_height = (512, 512)
                 left = (width - new_width)/2
                 top = (height - new_height)/2
                 right = (width + new_width)/2
                 bottom = (height + new_height)/2
 
-                # Crop the center of the image
                 img = img.crop((left, top, right, bottom))
+
+            # if the image is too small then say it is too small
             elif width < 256 or height < 256:
+                # we will deal with this later
                 print(img.size, 'too smol')
-                
 
+
+            # initialise file path to nothing
             path = ''
+            # if the user is signed in as a guest
             if userid == 0:
+                # use the standard file path, overwrite the original if it exists.
                 path = '/static/images/guestimage.png'
-                # img_to_delete = Images.query.filter(
-                #     Images.user_id.like(0)).all()
-                # print(img_to_delete)
-                # for img in img_to_delete:
-                #         db.session.delete(img)
-                #         db.session.commit()
-                # if len(img_to_delete) == 1:
-                #     db.session.delete(img_to_delete)
-                #     db.session.commit()
-
-                # elif len(img_to_delete) > 1:
-                #     for img in img_to_delete:
-                #         db.session.delete(img)
-                #         db.session.commit()
             else:
+                # otherwise if the user is signed in
+
+                # count how many images the user has already entered
+                # these should be saves seperately and not overwritten
                 images = Images.query.filter(
                     Images.user_id.like(userid)
                 ).all()
                 count = len(images)
+
+                # create a unique file name based on the user and how many images they have already entered.
+                # this allows us to recreate the path easily in a way that is user specific
                 path = '/static/images/%s_%s_image.png' % (str(userid), count)
             
+            # save the image
             img.save('.' + path)
 
+            # get the current date and time
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            # create a new image object to store
             new_image = Images(
                 user_id=userid, 
                 image_path=path, 
+                # default scan image and notes to nothing for now
                 scan_image_path='', 
                 notes='',
                 date_time_added=now)
 
+            # add the image to the db
             db.session.add(new_image)
             db.session.commit()
+
             print(path)
+
+            # return the show_image page to display the image the person just uploaded
             return render_template('show_image.html', 
                 userid=str(userid), 
+                # pass in the new image path
                 image_path=path,
                 )
 
+    # if request is not post, render upload page
     return render_template('/upload.html', userid=userid)
 
 @app.route('/view/<int:userid>/<int:scanid>')
 def view(userid, scanid):
-    return render_template('view_scan.html', user=Users.query.get_or_404(userid), scan=Images.query.get_or_404(scanid))
+    return render_template('view_scan.html',
+    user=Users.query.get_or_404(userid),
+    scan=Images.query.get_or_404(scanid)
+    )
 
 @app.route('/update_scan/<int:scanid>',  methods=['POST', 'GET'])
 def update_scan(scanid):

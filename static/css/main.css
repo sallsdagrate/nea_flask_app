@@ -14,11 +14,12 @@ body {
 table,
 th,
 td {
+  table-layout: fixed;
   border: 1px solid black;
-  width: 80%;
+  width: 90%;
 }
 
-input[type="text"],
+/* input[type="text"],
 select {
   width: 100%;
   padding: 12px 20px;
@@ -53,10 +54,10 @@ input[type="submit"]:hover {
 
   /* border-style: solid;
   border-color: #4c74af; */
-}
+}  */ */
 
 /* .tbl_container {
   display: flex;
   flex-direction: column;
   justify-content: center;
-} */
+}

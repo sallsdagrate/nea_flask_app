@@ -12,20 +12,28 @@
 
 {% block body %} 
 <!-- basic stuff in the body -->
+
+<!-- jinja syntax -->
 {% if user.username %}
+
+    <!-- if user is signed in and user is passed into the page -->
+    <!-- display the following -->
     <h1>user : {{user.username}}</h1>
-    <!-- <h1>pswd : {{user.password}}</h1> -->
+    <h1>pswd : {{user.password}}</h1>
     <a href="/update/{{user.id}}">update account</a>
     <br>
     <br>
     <a href='/upload/{{user.id}}'>upload image</a>
 {% else %}
+    <!-- otherwise print guest info -->
     <h1>user : guest</h1>
-    <!-- <h1>pswd : N/A</h1> -->
+    <h1>pswd : N/A</h1>
     <br>
+    <!-- need a special upload link for guests as well -->
     <a href='/upload/0'>upload image</a>
 {% endif %}
 
+<!-- everyone has the option to sign out -->
 <br>
 <a href="/">sign out</a>
 <br>
@@ -36,23 +44,32 @@
 <div class='form_container'>
     <table>
         <tr>
+            <!-- titles of the table -->
             <th>datetime</th>
             <th>images</th>
             <th>notes</th>
             <th>actions</th>
+            <!-- if images exists -->
             {% if images %}
-                {% if images|length == 0 %}
+                <!-- if images is not a list -->
+                <!-- {% if images|length == 0 %} -->
                     <tr>
-                        {% set source = '..' + images.image_path %}
+                        <!-- we need to check this because then we dont need to loop 
+                        and we can refer directly to images -->
+                        <!-- {% set source = '..' + images.image_path %}
                         <td>{{images.date_time_added}}</td>
                         <td><image src='{{ source }}' width=300px href='/view/{{user.id}}/{{images.id}}'></td>
                         <td>{{images.notes}}</td>
-                        <td><a href='/update_scan/{{image.id}}'>update</a></td>
-                    </tr>
-                {% else %}
+                        <td><a href='/update_scan/{{images.id}}'>update</a></td>
+                    </tr> -->
+                <!-- {% else %} -->
+                <!-- otherwise if there is more than one image -->
+                <!-- jinja syntax allows us to loop on the images list -->
                     {% for image in images %}
                         <tr>
+                            <!-- jinja syntax -->
                             {% set source = '..' + image.image_path %}
+                            <!-- rows -->
                             <td>{{image.date_time_added}}</td>
                             <td>
                                 <a href='/view/{{user.id}}/{{image.id}}'>
@@ -60,10 +77,11 @@
                                 </a>
                             </td>
                             <td>{{image.notes}}</td>
+                            <!-- link to an update uption that we will use later -->
                             <td><a href='/update_scan/{{image.id}}'>update</a></td>
                         </tr>
                     {% endfor %}   
-                {% endif %}
+                <!-- {% endif %} -->
             {% endif %}
         </tr>
     </table>
