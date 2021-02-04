@@ -9,8 +9,11 @@
 <!-- basic stuff in the body -->
 <h1>Upload new File</h1>
 <div class='form_container'>
+   <!-- form to sumbit a chosen image -->
    <form action='/upload/{{userid}}'  method=post enctype=multipart/form-data>
+      <!-- input type file -->
       <input type=file  accept="image/*" name=file>
+      <!-- submit button -->
       <input type=submit value=Upload>
    </form>
 </div>
