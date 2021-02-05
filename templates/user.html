@@ -72,9 +72,18 @@
                             <!-- rows -->
                             <td>{{image.date_time_added}}</td>
                             <td>
-                                <a href='/view/{{user.id}}/{{image.id}}'>
-                                    <image src='{{ source }}' width=300></image>
-                                </a>
+                                <!-- if the user is signed in -->
+                                {% if user.id %}
+                                    <!-- the link includes the userid -->
+                                    <a href='/view/{{user.id}}/{{image.id}}'>
+                                        <image src='{{ source }}' width=300></image>
+                                    </a>
+                                {% else %}
+                                    <!-- otherwise the link sends user 0 (guest) automatically -->
+                                    <a href='/view/0/{{image.id}}'>
+                                        <image src='{{ source }}' width=300></image>
+                                    </a>
+                                {% endif %}
                             </td>
                             <td>{{image.notes}}</td>
                             <!-- link to an update uption that we will use later -->

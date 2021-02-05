@@ -6,12 +6,16 @@
 
 {% block body %} 
 <h1>Uploaded</h1>
+<!-- if guest, return to guest page -->
 {% if userid == 0 %}
-    <div><a href="/">return to index</a></div>
+    <div><a href="/user/0">return to index</a></div>
 {% elif user_id != 0 %}
-    {% set returnurl = '/user/' + userid %}
+<!-- if signed in return to user page -->
+    {% set returnurl = '/user/' + scan.user_id|string %}
+
     <div><a href={{returnurl}}>return</a></div>
 {% endif %}
 
-<div><img src={{image_path}}></div>
+<!-- render image -->
+<div><img src={{scan.image_path}}></div>
 {% endblock %}

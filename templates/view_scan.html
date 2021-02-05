@@ -8,7 +8,14 @@
 {% block body %} 
 
 <!-- display username and scan date and time and image -->
-<h1>user: {{user.username}}</h1>
+
+<!-- if user.username exist then render username -->
+{% if user.username %}
+    <h1>user: {{user.username}}</h1>
+{% else %}
+<!-- otherwise it is a guest -->
+    <h1>user: guest</h1>
+{% endif %}
 <h2>scan: {{scan.date_time_added}}</h2>
 {% set source = '' + scan.image_path %}
 <img src={{scan.image_path}} width='80%'>

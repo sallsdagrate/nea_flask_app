@@ -12,3 +12,9 @@ errors:
 - Trying to only have one image show up for guest
 - Images wont load in view scan page, fixed by changing the image path
 - when deleting a user, gotta check how many scans there are
+
+
+need to:
+- reload cmd shift r when guest upload
+- uploading multiple images at once
+- inputting to a network

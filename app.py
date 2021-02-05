@@ -5,6 +5,7 @@ from sqlalchemy import and_, or_, not_, ForeignKey
 from db import db_init
 from PIL import Image
 import time
+from pynput.keyboard import Key, Controller
 # instantiate the app as a flask app
 app= Flask(__name__)
 
@@ -181,13 +182,25 @@ def user(userid):
         # and return them all.
         images = Images.query.filter(
         Images.user_id.like(userid)
-    ).all()
+        ).order_by(Images.date_time_added.desc()).all()
     # pass images and user into the html render
     return render_template('user.html', user=Users.query.get(userid), images=images)
 
-@app.route('/show_image')
-def show_image():
-    return render_template('show_image.html')
+def reload():
+    keyboard=Controller()
+
+    keyboard.press(Key.cmd)
+    keyboard.press(Key.shift)
+    keyboard.press('r')
+    
+    keyboard.release(Key.cmd)
+    keyboard.release(Key.shift)
+    keyboard.release('r')
+
+@app.route('/show_image/<int:userid>/<int:imageid>')
+def show_image(userid, imageid):
+        # return reloaded
+    return render_template('show_image.html', userid = userid, scan=Images.query.get_or_404(imageid))
 
 @app.route('/upload/<int:userid>',  methods=['POST', 'GET'])
 # we only need to know the user's id in order to save an image
@@ -275,19 +288,26 @@ def upload(userid):
             print(path)
 
             # return the show_image page to display the image the person just uploaded
-            return render_template('show_image.html', 
-                userid=str(userid), 
-                # pass in the new image path
-                image_path=path,
-                )
+            # return render_template('show_image.html', 
+            #     userid=str(userid), 
+            #     # pass in the new image path
+            #     image_path=path,
+            #     )
+            img = Images.query.filter(Images.date_time_added.like(now)).all()
+            print(img)
+            return redirect('/show_image/%r/%r' % (userid, img[0].id))
 
     # if request is not post, render upload page
     return render_template('/upload.html', userid=userid)
 
 @app.route('/view/<int:userid>/<int:scanid>')
 def view(userid, scanid):
+    if userid == 0:
+        user=userid
+    else:
+        user=Users.query.get_or_404(userid)
     return render_template('view_scan.html',
-    user=Users.query.get_or_404(userid),
+    user=user,
     scan=Images.query.get_or_404(scanid)
     )
 
