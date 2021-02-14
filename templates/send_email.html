@@ -1,0 +1,28 @@
+<!-- takes the format of base.html -->
+{% extends 'base.html' %}
+
+{% block head %} 
+<title>send email</title>
+{% endblock %}
+
+{% block body %} 
+<!-- basic stuff in the body -->
+<h1>Share scan {{ scanid }}</h1>
+<div class='form_container'>
+    <form action='/send_email/{{ scan.id }}' method="POST">
+        <a>message</a>
+        <br>
+        <input type="text" name='message' id='message'>        
+        <br>
+        <a>email</a>
+        <br>
+        <input type='text' name='email' id='email'>
+        <br>
+        <input type='submit' value='Send'>
+    </form>
+</div>
+<br>
+<a>Attachments </a>
+<br>
+<img src={{scan.image_path}}/>
+{% endblock %}

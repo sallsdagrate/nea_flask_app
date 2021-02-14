@@ -6,6 +6,8 @@
 - css
 - notes
 
+- uploading multiple images at once, add multiple to the upload input. getlist, loop for images, suddenly saying didnt work
+
 errors:
 - Guest user profile
 - If statements for displaying things in guest user, jinja syntax
@@ -18,3 +20,4 @@ need to:
 - reload cmd shift r when guest upload
 - uploading multiple images at once
 - inputting to a network
+

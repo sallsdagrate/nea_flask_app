@@ -1,11 +1,19 @@
 from flask import Flask, render_template, url_for, request, redirect
-from flask_sqlalchemy import SQLAlchemy
+
 from datetime import datetime
+
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import and_, or_, not_, ForeignKey
 from db import db_init
+
 from PIL import Image
+
 import time
+
 from pynput.keyboard import Key, Controller
+
+from flask_mail import Mail, Message
+
 # instantiate the app as a flask app
 app= Flask(__name__)
 
@@ -20,6 +28,24 @@ app.config['SQLALCHEMY_BINDS'] = {
 # creating the database model
 db = SQLAlchemy(app)
 # db_init(app)
+
+# configurations for sending email
+app.config['DEBUG'] = True
+app.config['TESTING'] = False
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT']=587
+app.config['MAIL_USE_TLS']=True
+app.config['MAIL_USE_SSL']=False
+# app.config['MAIL_DEBUG']=True
+app.config['MAIL_USERNAME']='sallsdagrate@gmail.com'
+app.config['MAIL_PASSWORD']='Sonu11sonu'
+app.config['MAIL_DEFAULT_SENDER']='sallsdagrate@gmail.com'
+app.config['MAIL_MAX_EMAILS']=None
+# app.config['MAIL_SUPPRESS_SEND']=False
+app.config['MAIL_ASCII_ATTACHMENTS']=False
+
+# instantiate the mail sender
+mail = Mail(app)
 
 # creating login table class, pass in db model
 class Users(db.Model):
@@ -197,10 +223,15 @@ def reload():
     keyboard.release(Key.shift)
     keyboard.release('r')
 
-@app.route('/show_image/<int:userid>/<int:imageid>')
-def show_image(userid, imageid):
+@app.route('/show_image/<int:userid>/<timestamp>')
+def show_image(userid, timestamp):
         # return reloaded
-    return render_template('show_image.html', userid = userid, scan=Images.query.get_or_404(imageid))
+    now = timestamp
+    images = Images.query.filter(Images.date_time_added.like(now)).all()
+    print(images)
+    return render_template('show_image.html', userid = userid, images=images)
+
+    
 
 @app.route('/upload/<int:userid>',  methods=['POST', 'GET'])
 # we only need to know the user's id in order to save an image
@@ -209,83 +240,86 @@ def upload(userid):
     # if the page is sending a post request
     if request.method == 'POST':
         # check if the post request has the file part
-        if 'file' not in request.files:
+        if 'file[]' not in request.files:
             # if there is no file at all then return this
             return 'didnt work'
         # otherwise retrieve the file
-        file = request.files['file']
+        file = request.files.getlist('file[]')
+        print(file)
         # if the file name is blank then basically no file was selected.
         # return back to the same page
-        if file.filename == '':
-            return redirect('/upload/' + str(userid))
+        # if file.filename == '':
+        #     return redirect('/upload/' + str(userid))
         
         # if the file path is satisfactory then
-        if file:
-            # open the image using pillow
-            img = Image.open(file)
-            # find its dimensions
-            width, height = img.size
-            # if the file is not standard size
-            if img.size != (512, 512):
-                print(img.size)
-                # then either resixe the image or...
-                # img = img.resize((512, 512))
 
-                # Crop the center of the image
-                new_width, new_height = (512, 512)
-                left = (width - new_width)/2
-                top = (height - new_height)/2
-                right = (width + new_width)/2
-                bottom = (height + new_height)/2
+        # get the current date and time
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        for image in file:
+            print (image)
+            if file:
+                # open the image using pillow
+                img = Image.open(image)
+                # find its dimensions
+                width, height = img.size
+                # if the file is not standard size
+                if img.size != (512, 512):
+                    print(img.size)
+                    # then either resixe the image or...
+                    # img = img.resize((512, 512))
 
-                img = img.crop((left, top, right, bottom))
+                    # Crop the center of the image
+                    new_width, new_height = (512, 512)
+                    left = (width - new_width)/2
+                    top = (height - new_height)/2
+                    right = (width + new_width)/2
+                    bottom = (height + new_height)/2
 
-            # if the image is too small then say it is too small
-            elif width < 256 or height < 256:
-                # we will deal with this later
-                print(img.size, 'too smol')
+                    img = img.crop((left, top, right, bottom))
+
+                # if the image is too small then say it is too small
+                elif width < 256 or height < 256:
+                    # we will deal with this later
+                    print(img.size, 'too smol')
 
 
-            # initialise file path to nothing
-            path = ''
-            # if the user is signed in as a guest
-            if userid == 0:
-                # use the standard file path, overwrite the original if it exists.
-                path = '/static/images/guestimage.png'
-            else:
-                # otherwise if the user is signed in
+                # initialise file path to nothing
+                path = ''
+                # if the user is signed in as a guest
+                if userid == 0:
+                    # use the standard file path, overwrite the original if it exists.
+                    path = '/static/images/guestimage.png'
+                else:
+                    # otherwise if the user is signed in
 
-                # count how many images the user has already entered
-                # these should be saves seperately and not overwritten
-                images = Images.query.filter(
-                    Images.user_id.like(userid)
-                ).all()
-                count = len(images)
+                    # count how many images the user has already entered
+                    # these should be saves seperately and not overwritten
+                    images = Images.query.filter(
+                        Images.user_id.like(userid)
+                    ).all()
+                    count = len(images)
 
-                # create a unique file name based on the user and how many images they have already entered.
-                # this allows us to recreate the path easily in a way that is user specific
-                path = '/static/images/%s_%s_image.png' % (str(userid), count)
-            
-            # save the image
-            img.save('.' + path)
+                    # create a unique file name based on the user and how many images they have already entered.
+                    # this allows us to recreate the path easily in a way that is user specific
+                    path = '/static/images/%s_%s_image.png' % (str(userid), count)
+                
+                # save the image
+                img.save('.' + path)
 
-            # get the current date and time
-            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                # create a new image object to store
+                new_image = Images(
+                    user_id=userid, 
+                    image_path=path, 
+                    # default scan image and notes to nothing for now
+                    scan_image_path='', 
+                    notes='',
+                    date_time_added=now)
 
-            # create a new image object to store
-            new_image = Images(
-                user_id=userid, 
-                image_path=path, 
-                # default scan image and notes to nothing for now
-                scan_image_path='', 
-                notes='',
-                date_time_added=now)
+                # add the image to the db
+                db.session.add(new_image)
+                db.session.commit()
 
-            # add the image to the db
-            db.session.add(new_image)
-            db.session.commit()
-
-            print(path)
+                print(path)
 
             # return the show_image page to display the image the person just uploaded
             # return render_template('show_image.html', 
@@ -293,9 +327,9 @@ def upload(userid):
             #     # pass in the new image path
             #     image_path=path,
             #     )
-            img = Images.query.filter(Images.date_time_added.like(now)).all()
-            print(img)
-            return redirect('/show_image/%r/%r' % (userid, img[0].id))
+
+
+        return redirect(url_for('.show_image', userid=userid, timestamp=now))
 
     # if request is not post, render upload page
     return render_template('/upload.html', userid=userid)
@@ -314,6 +348,7 @@ def view(userid, scanid):
 @app.route('/update_scan/<int:scanid>',  methods=['POST', 'GET'])
 def update_scan(scanid):
     if request.method == 'POST':
+        # store the notes
         scan_to_update = Images.query.get_or_404(scanid)
         scan_to_update.notes = request.form['notes']
         db.session.commit()
@@ -321,6 +356,41 @@ def update_scan(scanid):
     else:
         return render_template('update_scan.html', scan=Images.query.get_or_404(scanid))
 
+@app.route('/send_email/<int:scanid>',  methods=['POST', 'GET'])
+def send_email(scanid):
+    if request.method == 'POST':
+
+        # gets the message and email from the form
+        message=request.form['message']
+        email=request.form['email']
+        scan=Images.query.get_or_404(scanid)
+
+        user = Users.query.filter(Users.id.like(scan.user_id)).first()
+
+        # creates the message header 
+        # for now we will make the recipient default
+
+        # adding the user to the title
+        msg = Message('%r shared a scan with you' % user.username)
+
+        # add the recipient
+        msg.add_recipient(email)
+
+        # we will create the email with html so we can add images and attachments
+        # msg.html='<h1>this is a test email hihi</h1>'
+        msg.body=str(message)
+        print('message = %r' % message)
+
+        # add attachments
+        with app.open_resource('.'+scan.image_path) as fp:
+            msg.attach("scan.png", "image/png", fp.read())
+
+        # sends the message
+        mail.send(msg)
+        # if we see this then the message sending was successful
+        return 'message sent'
+    else:
+        return render_template('send_email.html', scan=Images.query.get_or_404(scanid))
 
 # if an error, use inbuilt error debugging tool
 if __name__ == '__main__':

@@ -11,11 +11,16 @@
     <div><a href="/user/0">return to index</a></div>
 {% elif user_id != 0 %}
 <!-- if signed in return to user page -->
-    {% set returnurl = '/user/' + scan.user_id|string %}
+    {% set returnurl = '/user/' + images[0].user_id|string %}
 
     <div><a href={{returnurl}}>return</a></div>
 {% endif %}
 
 <!-- render image -->
-<div><img src={{scan.image_path}}></div>
+{% for image in images %}
+    <div>
+        <h2>{{image}}</h2>
+        <img src={{image.image_path}}></div>
+{% endfor %}
+
 {% endblock %}

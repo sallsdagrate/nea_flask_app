@@ -12,7 +12,7 @@
    <!-- form to sumbit a chosen image -->
    <form action='/upload/{{userid}}'  method=post enctype=multipart/form-data>
       <!-- input type file -->
-      <input type=file  accept="image/*" name=file>
+      <input type=file  accept="image/*" name=file[] multiple=''>
       <!-- submit button -->
       <input type=submit value=Upload>
    </form>

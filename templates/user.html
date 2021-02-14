@@ -87,7 +87,14 @@
                             </td>
                             <td>{{image.notes}}</td>
                             <!-- link to an update uption that we will use later -->
-                            <td><a href='/update_scan/{{image.id}}'>update</a></td>
+                            <td>
+                                <a href='/update_scan/{{image.id}}'>update</a>
+                                {% if user.id %}
+                                    <br>
+                                    <br>
+                                    <a href='/send_email/{{image.id}}'>share via email</a>
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}   
                 <!-- {% endif %} -->
