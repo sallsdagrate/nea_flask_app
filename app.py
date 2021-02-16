@@ -14,6 +14,7 @@ from pynput.keyboard import Key, Controller
 
 from flask_mail import Mail, Message
 
+
 # instantiate the app as a flask app
 app= Flask(__name__)
 
@@ -391,6 +392,8 @@ def send_email(scanid):
         return 'message sent'
     else:
         return render_template('send_email.html', scan=Images.query.get_or_404(scanid))
+
+
 
 # if an error, use inbuilt error debugging tool
 if __name__ == '__main__':
