@@ -1,0 +1,14 @@
+<!-- takes the format of base.html -->
+{% extends 'base.html' %}
+
+{% block head %} 
+<title>message sent</title>
+{% endblock %}
+
+{% block body %} 
+<!-- basic stuff in the body -->
+<h3>message sent</h3>
+
+<div><a href="/user/{{user.id}}">return</a></div>
+
+{% endblock %}

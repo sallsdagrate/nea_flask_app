@@ -8,7 +8,8 @@
 {% block body %} 
 <h1>update image</h1>
 <form action='/update_scan/{{scan.id}}' method="POST">
-    <textarea name='notes' id='notes' value="{{scan.notes}}"></textarea>
+    <textarea name='notes' id='notes' class='notes' rows="20" cols="50">{{scan.notes}}</textarea>
+    <br>
     <input type="submit" value="update">
 </form>
 

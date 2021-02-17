@@ -10,13 +10,24 @@
 <h1>Share scan {{ scanid }}</h1>
 <div class='form_container'>
     <form action='/send_email/{{ scan.id }}' method="POST">
-        <a>message</a>
+        <a>title</a>
         <br>
-        <input type="text" name='message' id='message'>        
+        <input type='text' name='email_title' id='email_title'>
         <br>
-        <a>email</a>
+        <br>
+        <a>email address</a>
         <br>
         <input type='text' name='email' id='email'>
+        <br>
+        <br>
+        <a>message</a>
+        <br>
+        <textarea name='message' id='message' rows="10" cols=50 placeholder="enter message for email here"></textarea>     
+        <br>
+        <br>
+        <a>notes</a>
+        <br>
+        <textarea name='notes' id='notes' class='notes' rows="20" cols="50">{{scan.notes}}</textarea>
         <br>
         <input type='submit' value='Send'>
     </form>

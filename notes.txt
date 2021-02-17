@@ -21,3 +21,7 @@ need to:
 - uploading multiple images at once
 - inputting to a network
 
+store class, store other info in notes by default
+user home
+adding notes to email
+no caching

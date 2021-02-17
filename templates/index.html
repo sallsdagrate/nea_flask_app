@@ -12,9 +12,13 @@
     <h1>ADMIN INDEX</h1>
 
     <!-- link to the login page -->
+    <a href='/user_home'>user home</a>
+    <br>
     <a href='/login'>login</a>
     <br>
-    <a href='/upload/0'>upload image</a>
+    <a href='/upload/0'>upload as guest</a>
+    <br>
+    <a href='/create_account'>create account</a>
     <br>
     <!-- table for the current usernames and passwords -->
     <div class="tbl_container">
@@ -78,6 +82,7 @@
                 <th>user id</th>
                 <th>image path</th>
                 <th>scan image path</th> 
+                <th>cancer class</th>
                 <th>notes</th>
                 <th>date time</th>
                 <!-- <th>date</th > -->
@@ -89,6 +94,7 @@
                     <td>{{ image.user_id }}</td>
                     <td>{{ image.image_path }}</td>
                     <td>{{ image.scan_image_path }}</td>
+                    <td>{{ image.cancer_class }}</td>
                     <td>{{ image.notes }}</td>
                     <td>{{ image.date_time_added }}</td>
                 </tr>
