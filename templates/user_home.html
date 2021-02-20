@@ -18,37 +18,43 @@
                 Creating an account allows you to store and look over your past uploads and share them with friends. You can also store notes about each image for future reference.
             </a>
         </div>
-        <div class="bottom_bit"></div>
+        <!-- <div class="bottom_bit"></div> -->
     </div>
-   <div class="bottom_half">
-       <div class="left">
-           left
+   <div class="bottom_half" style="height: auto;">
+       <div class="left" style="width: 49%; float: left;">
+            <div class="guest" style="background-color:darksalmon">
+                <a href='/upload/0'>
+                    <i class="fas fa-file-upload"></i>
+                    Upload as guest
+                </a>
+                <br>
+                <br>
+                <a>Uploading as a guest means you can use the model but will not be able to store or look back at previous scans. All guest scans are stored and tracked but images are overwritten.</a>
+            </div>
        </div>
-       <div class="right">
+       <div class="right" style="width: 49%; float:right;">
             <div class="login_form">
                 <div class="form_container">
                     <form action='/login' method="POST">
                         <h3>Login</h3>
                         <!-- <br> -->
-                        <input type="text" name='username' id='username' >
+                        <input type="text" name='username' id='username' placeholder="username">
                         <br>
-                        <input type='text' name='password' id='password' >
+                        <br>
+                        <input type='text' name='password' id='password' placeholder="password">
+                        <br>
                         <br>
                         <input type='submit' value='login'>
                     </form>
                 </div>
+                <br>
+                <a>Don't have an account?</a>
+                <br>
+                <a href='/create_account/no_error'>create account</a>
+
         </div>
        </div>
        
    </div>
-    <!-- <h3>Use</h3> -->
-        <a href='/login'>login</a>
-        <br>
-        <br>
-        <a href='/create_account'>create account</a>
-        <br>
-        <br>
-        <a href='/upload/0'>upload as guest</a>
-        <br>
 </div>
 {% endblock %}

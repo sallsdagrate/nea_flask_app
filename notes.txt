@@ -26,3 +26,6 @@ user home
 adding notes to email
 no caching
 restructured db
+
+error messages for creating account
+censor password

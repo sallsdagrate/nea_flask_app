@@ -8,17 +8,19 @@
 {% block body %} 
 <!-- basic stuff in the body -->
 <h1>LOGIN</h1>
-    <div class="form_container">
-        <form action='/login' method="POST">
-            <input type="text" name='username' id='username' >
-            <input type='text' name='password' id='password' >
-            <input type='submit' value='login'>
-        </form>
+    <div class="login_form">
+        <div class="form_container">
+            <form action='/login' method="POST">
+                <input type="text" name='username' id='username' >
+                <input type='text' name='password' id='password' >
+                <input type='submit' value='login'>
+            </form>
+        </div>
+        <div>
+            <a href="/user_home">return</a>
+            <br>
+            <a href='/create_account'>create account</a>
+            <br>
     </div>
-    <br>
-    <div>
-        <a href="/">return</a>
-        <br>
-        <a href='/create_account'>create account</a>
-    </div>
+</div>
 {% endblock %}

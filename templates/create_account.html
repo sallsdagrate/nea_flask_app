@@ -8,25 +8,41 @@
 {% block body %} 
 <!-- basic stuff in the body -->
 <!-- form to add a user -->
-<div class='form_container'>
-    <form action='/' method="POST">
-        <br>
-        <!-- <a>username</a> -->
-        <input type="text" name='username' id='username' placeholder="username">
-        <br>
-        <br>
-        <!-- <a>password</a> -->
-        <input type='text' name='password' id='password' placeholder="password">
-        <br>
-        <br>
-        <!-- <a>email</a> -->
-        <input type='text' name='email' id='email' placeholder="email address (optional)">
-        <br>
-        <br>
-        <!-- <a>pfp</a> -->
-        <input type='file' name='pfp' id='pfp'>
-        <!-- <br> -->
-        <input type='submit' value='Add user'>
-    </form>
+<div class="account_form" >
+    <div class='form_container'>
+        <form action='/' method="POST">
+            <h3>Create Account</h3>
+            <!-- <br> -->
+            <!-- <a>username</a> -->
+            <input type="text" name='username' id='username' placeholder="username">
+            {% if error == 'username_blank' %}
+                <a style="color: orangered;">Please enter a username</a>
+            {% endif %}
+            <br>
+            <br>
+            <!-- <a>password</a> -->
+            <input type='password' name='password' id='password' placeholder="password">
+            {% if error == 'password_blank' %}
+            <a style="color: orangered;">Please enter a password</a>
+            {% endif %}
+            <br>
+            <br>
+            <input type='password' name='confirm_password' id='confirm_password' placeholder="confirm password">
+            {% if error == 'psw_not_same' %}
+            <a style="color: orangered;">Passwords do not match</a>
+            {% endif %}            
+            <br>
+            <br>
+            <!-- <a>email</a> -->
+            <input type='text' name='email' id='email' placeholder="email address (optional)">
+            <br>
+            <br>
+            <!-- <a>pfp</a> -->
+            <!-- <input type='file' name='pfp' id='pfp'> -->
+            <!-- <br> -->
+            <input type='submit' value='Add user'>
+        </form>
+    </div>
 </div>
+    
 {% endblock %}

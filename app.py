@@ -112,22 +112,37 @@ def index():
         # retrieve the inputs from the page request
         new_username = request.form['username']
         new_password = request.form['password']
+        confirm_new_password = request.form['confirm_password']
         new_email = request.form['email']
 
-        # create a new user
-        new_user = Users(username=new_username,
-                         password=new_password,
-                         email=new_email,
-                         pfp_path=None)
-        try:
-            # try adding to the database
-            db.session.add(new_user)
-            # commit to the database
-            db.session.commit()
-            # redirect back to the index page
-            return redirect('/')
-        except:
-            return 'there was an error adding ur new account'
+        if new_username != "":
+            if new_password != "":
+                if new_password == confirm_new_password:
+                    # create a new user
+                    new_user = Users(username=new_username,
+                                     password=new_password,
+                                     email=new_email,
+                                     pfp_path=None)
+                    try:
+                        # try adding to the database
+                        db.session.add(new_user)
+                        # commit to the database
+                        db.session.commit()
+                        # redirect back to the index page
+
+                        user_id = Users.query.filter(
+                            Users.username.like(new_username),
+                            Users.password.like(new_password)).first().id
+                        return redirect('/user_home')
+                    except:
+                        return 'there was an error adding ur new account'
+                else:
+                    return redirect('create_account/psw_not_same')
+            else:
+                return redirect('create_account/password_blank')
+        else:
+            return redirect('create_account/username_blank')
+
     else:
 
         # if not a post method, retrieve all the current users
@@ -207,9 +222,9 @@ def login():
         return render_template('login.html')
 
 
-@app.route('/create_account')
-def create_account():
-    return render_template('create_account.html')
+@app.route('/create_account/<error>')
+def create_account(error):
+    return render_template('create_account.html', error=error)
 
 
 @app.route('/user/<int:userid>')
