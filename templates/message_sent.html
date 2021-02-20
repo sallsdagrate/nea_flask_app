@@ -2,13 +2,28 @@
 {% extends 'base.html' %}
 
 {% block head %} 
-<title>message sent</title>
+<title>message</title>
 {% endblock %}
 
 {% block body %} 
 <!-- basic stuff in the body -->
-<h3>message sent</h3>
 
+<!-- display basic message -->
+<h3>{{message}}</h3>
+
+<!-- if images have been passed in then display -->
+{% if images %}
+<br>
+<br>
+<ul>
+    {% for image in images %}
+        <li>{{image}}</li>
+    {% endfor %}
+
+</ul>
+{% endif %}
+
+<!-- return link -->
 <div><a href="/user/{{user.id}}">return</a></div>
 
 {% endblock %}

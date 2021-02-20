@@ -25,3 +25,4 @@ store class, store other info in notes by default
 user home
 adding notes to email
 no caching
+restructured db

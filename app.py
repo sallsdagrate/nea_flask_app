@@ -94,14 +94,8 @@ class Images(db.Model):
 
 @app.after_request
 def add_header(r):
-    """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also to cache the rendered page for 10 minutes.
-    """
-    # r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    # r.headers["Pragma"] = "no-cache"
-    # r.headers["Expires"] = "0"
-    # r.headers['Cache-Control'] = 'public, max-age=0'
+    # Add headers to both force latest IE rendering engine or Chrome Frame,
+    # and also to cache the rendered page for 10 minutes.
     r.cache_control.max_age = 0
 
     print('no cache')
@@ -285,6 +279,8 @@ def upload(userid):
 
         # get the current date and time
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        small_images = []
         for image in file:
             print(image)
             if file:
@@ -294,6 +290,11 @@ def upload(userid):
                 width, height = img.size
                 # if the file is not standard size
                 if img.size != (512, 512):
+                    if width < 300 or height < 300:
+                        # add image to small images list
+                        small_images = small_images + [str(image)]
+                        # skip image
+                        continue
                     print(img.size)
                     # then either resixe the image or...
                     # img = img.resize((512, 512))
@@ -335,6 +336,7 @@ def upload(userid):
                 # save the image
                 img.save('.' + path)
 
+                # run the image through the model
                 output = run_model('.' + path)
                 print(output)
 
@@ -361,6 +363,12 @@ def upload(userid):
             #     image_path=path,
             #     )
 
+        # if there are any undersized images, render this message html
+        if small_images != []:
+            return render_template('message_sent.html',
+                                   user=Users.query.get_or_404(userid),
+                                   message='an image was too small',
+                                   images=small_images)
         return redirect(url_for('.show_image', userid=userid, timestamp=now))
 
     # if request is not post, render upload page
@@ -396,6 +404,7 @@ def send_email(scanid):
     if request.method == 'POST':
 
         # gets the message and email from the form
+        title = request.form['email_title']
         message = request.form['message']
         notes = request.form['notes']
         email = request.form['email']
@@ -407,7 +416,7 @@ def send_email(scanid):
         # for now we will make the recipient default
 
         # adding the user to the title
-        msg = Message('%r shared a scan with you' % user.username)
+        msg = Message('%r shared a scan with you: %r' % (user.username, title))
 
         # add the recipient
         msg.add_recipient(email)
@@ -424,7 +433,9 @@ def send_email(scanid):
         # sends the message
         mail.send(msg)
         # if we see this then the message sending was successful
-        return render_template('message_sent.html', user=user)
+        return render_template('message_sent.html',
+                               user=user,
+                               message='message sent')
     else:
         return render_template('send_email.html',
                                scan=Images.query.get_or_404(scanid))

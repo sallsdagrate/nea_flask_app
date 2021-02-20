@@ -6,24 +6,49 @@
 {% endblock %}
 
 {% block body %} 
-<div class='about'>
-    <h1>Welcome to the cancer image classifier!</h1>
-    <br>
-    <h3>About</h3>
-    <a>
-        This app classifies types of cancer using machine learning models and convolutional networks. Just upload an image and see how it works!.
-        Creating an account allows you to store and look over your past uploads and share them with friends. You can also store notes about each image for future reference.
-    </a>
-    <h3>Use</h3>
-    <a href='/login'>login</a>
-    <br>
-    <br>
-    <a href='/create_account'>create account</a>
-    <br>
-    <br>
-    <a href='/upload/0'>upload as guest</a>
-    <br>
+<div class="user_home">
+    <div class="top_half">
+        <div class='about'>
+            <h1>Welcome to the cancer image classifier!</h1>
+            <!-- <h3>About</h3> -->
+            <br>
+            <br>
+            <a>
+                This app classifies types of cancer using machine learning models and convolutional networks. Just upload an image and see how it works!.
+                Creating an account allows you to store and look over your past uploads and share them with friends. You can also store notes about each image for future reference.
+            </a>
+        </div>
+        <div class="bottom_bit"></div>
+    </div>
+   <div class="bottom_half">
+       <div class="left">
+           left
+       </div>
+       <div class="right">
+            <div class="login_form">
+                <div class="form_container">
+                    <form action='/login' method="POST">
+                        <h3>Login</h3>
+                        <!-- <br> -->
+                        <input type="text" name='username' id='username' >
+                        <br>
+                        <input type='text' name='password' id='password' >
+                        <br>
+                        <input type='submit' value='login'>
+                    </form>
+                </div>
+        </div>
+       </div>
+       
+   </div>
+    <!-- <h3>Use</h3> -->
+        <a href='/login'>login</a>
+        <br>
+        <br>
+        <a href='/create_account'>create account</a>
+        <br>
+        <br>
+        <a href='/upload/0'>upload as guest</a>
+        <br>
 </div>
-
-
 {% endblock %}

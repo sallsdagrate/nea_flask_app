@@ -108,13 +108,16 @@ def run_model(image_path):
 
     # find the class with the highest probability
     output, scan_class = torch.max(tens, 1)
+
     scan_class = scan_class.item()
+
+    # select type of cancer
     cancer_type = ''
-    if scan_class == 0:
+    if scan_class == 1:
         cancer_type = 'meningioma'
-    elif scan_class == 1:
-        cancer_type = 'glioma'
     elif scan_class == 2:
+        cancer_type = 'glioma'
+    elif scan_class == 3:
         cancer_type = 'pituitary'
     else:
         cancer_type = 'no cancer'
