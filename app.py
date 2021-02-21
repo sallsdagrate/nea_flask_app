@@ -283,7 +283,9 @@ def upload(userid):
             # if there is no file at all then return this
             return 'didnt work'
         # otherwise retrieve the file
+        print('before request')
         file = request.files.getlist('file[]')
+        print('after request')
         print(file)
         # if the file name is blank then basically no file was selected.
         # return back to the same page
@@ -298,7 +300,11 @@ def upload(userid):
         small_images = []
         for image in file:
             print(image)
+
+            if image.content_length == 0:
+                return redirect('/upload/%r' % userid)
             if file:
+
                 # open the image using pillow
                 img = Image.open(image)
                 # find its dimensions

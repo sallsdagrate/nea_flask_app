@@ -29,3 +29,6 @@ restructured db
 
 error messages for creating account
 censor password
+need to finish modal
+cannot upload with no file
+icons

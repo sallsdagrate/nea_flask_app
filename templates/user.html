@@ -8,42 +8,96 @@
     <title>user : guest</title>
 {% endif %}
 
+<style>
+    body {font-family: Arial, Helvetica, sans-serif;}
+    
+    /* The Modal (background) */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      padding-top: 100px; /* Location of the box */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+    
+    /* Modal Content */
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+    
+    /* The Close Button */
+    .close {
+      color: #aaaaaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    </style>
+
 {% endblock %}
 
 {% block body %} 
 <!-- basic stuff in the body -->
+<div class="top_half">
+    <div class="user_profile">
+        <!-- jinja syntax -->
+        {% if user.username %}
 
-<!-- jinja syntax -->
-{% if user.username %}
+        <!-- if user is signed in and user is passed into the page -->
+        <!-- display the following -->
+        <h1>user : {{user.username}}</h1>
+        <!-- <h1>pswd : {{user.password}}</h1> -->
+        <a href="/update/{{user.id}}">
+            <i class="far fa-user-circle"></i>
+            update account
+        </a>
+        <br>
+        <br>
+        <a href='/upload/{{user.id}}'>
+            <i class="fas fa-file-upload"></i>
+            upload image
+        </a>
+        {% else %}
+        <!-- otherwise print guest info -->
+        <h1>user : guest</h1>
+        <h1>pswd : N/A</h1>
+        <br>
+        <!-- need a special upload link for guests as well -->
+        <a href='/upload/0'>upload as guest</a>
+        {% endif %}
 
-    <!-- if user is signed in and user is passed into the page -->
-    <!-- display the following -->
-    <h1>user : {{user.username}}</h1>
-    <!-- <h1>pswd : {{user.password}}</h1> -->
-    <a href="/update/{{user.id}}">update account</a>
-    <br>
-    <br>
-    <a href='/upload/{{user.id}}'>upload image</a>
-{% else %}
-    <!-- otherwise print guest info -->
-    <h1>user : guest</h1>
-    <h1>pswd : N/A</h1>
-    <br>
-    <!-- need a special upload link for guests as well -->
-    <a href='/upload/0'>upload as guest</a>
-{% endif %}
+        <!-- everyone has the option to sign out -->
+        <br>
+        <br>
+        <a href="/user_home">sign out</a>
+        <br>
+    </div>  
+</div>
 
-<!-- everyone has the option to sign out -->
-<br>
-<a href="/user_home">sign out</a>
-<br>
 
 
 <!-- <form action='/update/{{ user.id }}' method="POST"></form> -->
 <br>
-<a> cancer class key: 1 for meningioma, 2 for glioma, 3 for pituitary tumor</a>
+<h2> cancer class key: 1 for meningioma, 2 for glioma, 3 for pituitary tumor</h2>
 <br>
-<div class='form_container'>
+<div class='tbl_container'>
     <table>
         <tr>
             <!-- titles of the table -->
@@ -78,7 +132,17 @@
                                 <!-- if the user is signed in -->
                                 {% if user.id %}
                                     <!-- the link includes the userid -->
-                                    <a href='/view/{{user.id}}/{{image.id}}'>
+
+                                    <div id="{{source}}" class="modal">
+                                        <!-- Modal content -->
+                                        <div class="modal-content">
+                                            {% set span_id = 'close' + source %}
+                                            <span class='close'id={{span_id}}>&times;</span>
+                                            <img src="{{source}}"></image>
+                                        </div>                
+                                    </div>
+                                    
+                                    <a class="img" id='{{ source}}'>
                                         <image src='{{ source }}' width=250></image>
                                     </a>
                                 {% else %}
@@ -97,6 +161,9 @@
                                     <br>
                                     <br>
                                     <a href='/send_email/{{image.id}}'>share via email</a>
+                                    <br>
+                                    <br>
+                                    <a href='/view/{{user.id}}/{{image.id}}'>view full scan</a>
                                 {% endif %}
                             </td>
                         </tr>
@@ -106,4 +173,63 @@
         </tr>
     </table>
 </div>
+<!-- The Modal -->
+
+
+<script>
+
+    var imgs = document.getElementsByClassName("img");
+    var modals = document.getElementsByClassName("modal")
+    var spans = document.getElementsByClassName("close");
+    
+    console.log(imgs, modals, spans)
+
+    var open_modal = function(i){
+        modals[i].style.display = "block";
+        console.log(imgs[i])
+    }
+
+    var close_modal = function(i){
+        modals[i].style.display = "none"; 
+        console.log(imgs[i]) 
+    }
+
+    // window_close = function(i){
+    //     if (event.target == modals[i]) {
+    //             modals[i].style.display = "none";
+    //     }
+    // }
+    // var current_modal = 0
+    for(var i = 0; i < imgs.length; i++) {
+        console.log(imgs[i])
+        imgs[i].addEventListener("click", function(){
+            console.log(i);
+            open_modal(i);
+        }, false)
+
+        spans[i].addEventListener('click', (i) => close_modal(i))
+        // window.addEventListener('click', window_close(i))
+
+
+
+
+        // var img = imgs[i];
+        // var modal = document.getElementById(img.id);
+        // var span = document.getElementById("close" + img.id);
+        // console.log(img)
+        // img.onclick = function() {
+        //     modal.style.display = "block";
+        //     console.log(img)
+        // }
+        // span.onclick = function() {
+        //     modal.style.display = "none";
+        // }
+        // window.onclick = function(event) {
+        //     if (event.target == modal) {
+        //         modal.style.display = "none";
+        //     }
+        // }
+    }
+
+</script>
 {% endblock %}
