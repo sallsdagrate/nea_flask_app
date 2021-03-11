@@ -9,8 +9,10 @@
 <!-- basic stuff in the body -->
 <div class=login>
     <h1>UPDATE</h1>
+    <br>
+    <a href="/user/{{user.id}}">return</a>
     <!-- form sends back to update [post] -->
-    <div class='form_container'>
+    <div class='form_container' style='width: 700px; position: relative; left: 26%;' >
         <form action='/update/{{ user.id }}' method="POST">
             <input type="text" name='username' id='username' value="{{ user.username }}">
             <input type='text' name='password' id='password' value="{{ user.password }}">

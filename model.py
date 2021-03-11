@@ -12,6 +12,13 @@ import numpy as np
 
 import os
 
+from testGreyscale import isGreyscale
+
+# import relevant image processing functions
+from skimage import data, io, filters
+
+import matplotlib.pyplot as plt
+
 # defining network class and passing in nn.Module, a package that includes all the neural network functionality
 
 
@@ -22,8 +29,8 @@ class Net(nn.Module):
         super(Net, self).__init__()
         # define network layers
         # 2d convolutional layers (input channels, output channels, kernel size)
-        self.conv1 = nn.Conv2d(3, 3, 5)
-        self.conv2 = nn.Conv2d(3, 5, 5)
+        self.conv1 = nn.Conv2d(3, 5, 5)
+        self.conv2 = nn.Conv2d(5, 5, 5)
         self.conv3 = nn.Conv2d(5, 5, 2)
         # Pooling layer (kernel size, step)
         self.pool = nn.MaxPool2d(2, 2)
@@ -52,7 +59,7 @@ class Net(nn.Module):
 
 def load_model():
 
-    FILE = 'model copy.pth'
+    FILE = 'model - 100.pth'
 
     # instantiate network
     net = Net()
@@ -73,12 +80,20 @@ def load_model():
 imsize = 512
 
 # function to scale the image and transform into tensor at once
-loader = transforms.Compose([transforms.Scale(imsize), transforms.ToTensor()])
+# loader = transforms.Compose([transforms.Scale(imsize), transforms.ToTensor()])
+loader = transforms.ToTensor()
 
 
 def image_loader(image_name):
     # load image with pillow
     image = Image.open(image_name).convert(mode='RGB')
+    image = np.asarray(image)
+
+    isGrey = isGreyscale(image_name)
+    if isGrey:
+        scanFileName = image_name.rstrip('.png') + 'scan.png'
+
+        plt.imsave(scanFileName, image)
 
     # crops to image size and transforms into tensor
     image = loader(image).float()
@@ -100,6 +115,8 @@ def run_model(image_path):
     # load the image from the imageloader function
     image = image_loader(image_path)
 
+    print(image_path)
+
     # load the model
     net = load_model()
 
@@ -113,11 +130,11 @@ def run_model(image_path):
 
     # select type of cancer
     cancer_type = ''
-    if scan_class == 1:
+    if scan_class == 0:
         cancer_type = 'meningioma'
-    elif scan_class == 2:
+    elif scan_class == 1:
         cancer_type = 'glioma'
-    elif scan_class == 3:
+    elif scan_class == 2:
         cancer_type = 'pituitary'
     else:
         cancer_type = 'no cancer'

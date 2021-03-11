@@ -95,7 +95,7 @@
 
 <!-- <form action='/update/{{ user.id }}' method="POST"></form> -->
 <br>
-<h2> cancer class key: 1 for meningioma, 2 for glioma, 3 for pituitary tumor</h2>
+<h2> cancer class key: 0 for meningioma, 1 for glioma, 2 for pituitary tumor</h2>
 <br>
 <div class='tbl_container'>
     <table>
@@ -156,7 +156,7 @@
                             <td>{{image.cancer_class}}</td>
                             <!-- link to an update uption that we will use later -->
                             <td>
-                                <a href='/update_scan/{{image.id}}'>update</a>
+                                <a href='/update_scan/{{image.id}}'>update notes</a>
                                 {% if user.id %}
                                     <br>
                                     <br>

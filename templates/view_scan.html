@@ -17,16 +17,28 @@
     <h1>user : guest</h1>
 {% endif %}
 <a href='/user/{{scan.user_id}}'>return</a>
-<h2>scan: {{scan.date_time_added}}</h2>
-<br>
-<a>cancer class: {{scan.cancer_class}}</a>
 <br>
 <br>
-<a>notes:</a>
-<br>
-<textarea readonly rows="10" cols="50" >{{scan.notes}}</textarea>
-<br>
-<br>
-<img src={{scan.image_path}} width='80%'>
-
+<a id='print_link' href=''>print scan</a>
+<div style='width: 700px; position: relative; left: 26%;'>
+    <h2>scan: {{scan.date_time_added}}</h2>
+    <br>
+    <a>cancer class: {{scan.cancer_class}}</a>
+    <br>
+    <br>
+    <a>notes:</a>
+    <br>
+    <textarea readonly rows="10" cols="50" >{{scan.notes}}</textarea>
+    <br>
+    <br>
+    <img src={{scan.image_path}} width='80%'>
+    
+</div>
+    
+<script>
+    btn = document.getElementById('print_link')
+    btn.onclick = function(){
+        window.print()
+    }
+</script>
 {% endblock %}

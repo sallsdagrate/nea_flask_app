@@ -8,7 +8,7 @@
 {% block body %} 
 <!-- basic stuff in the body -->
 <h1>Upload new File</h1>
-<div class='form_container'>
+<div class='form_container'style='width: 700px; position: relative; left: 26%;'>
    <!-- form to sumbit a chosen image -->
    <form action='/upload/{{userid}}'  method=post enctype=multipart/form-data>
       <!-- input type file -->
@@ -18,6 +18,11 @@
    </form>
 </div>
 <br>
-<div><a href="/user/{{userid}}">return</a></div>
+
+{% if userid != 0 %}
+   <div><a href="/user/{{userid}}">return</a></div>
+{% else %}
+   <div><a href="/user_home">return</a></div>  
+{% endif %}
 
 {% endblock %}

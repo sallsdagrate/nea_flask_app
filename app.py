@@ -64,7 +64,8 @@ class Users(db.Model):
 
     # other attributes
     email = db.Column(db.String(200), nullable=True)
-    pfp_path = db.Column(db.String(200), nullable=True)
+
+    # pfp_path = db.Column(db.String(200), nullable=True)
 
     # date_added = db.Column(db.String(10))
 
@@ -115,6 +116,7 @@ def index():
         confirm_new_password = request.form['confirm_password']
         new_email = request.form['email']
 
+        # depending on which error there is, redirect with a new error
         if new_username != "":
             if new_password != "":
                 if new_password == confirm_new_password:
@@ -143,6 +145,7 @@ def index():
         else:
             return redirect('create_account/username_blank')
 
+    # if no error then add a user
     else:
 
         # if not a post method, retrieve all the current users
@@ -251,18 +254,6 @@ def user(userid):
                            images=images)
 
 
-def reload():
-    keyboard = Controller()
-
-    keyboard.press(Key.cmd)
-    keyboard.press(Key.shift)
-    keyboard.press('r')
-
-    keyboard.release(Key.cmd)
-    keyboard.release(Key.shift)
-    keyboard.release('r')
-
-
 @app.route('/show_image/<int:userid>/<timestamp>')
 def show_image(userid, timestamp):
     # return reloaded
@@ -300,8 +291,11 @@ def upload(userid):
         small_images = []
         for image in file:
             print(image)
+            print(image.filename)
 
-            if image.content_length == 0:
+            # if the filename is nothing then there is no file
+            # if so, redirect back to the same page.
+            if image.filename == '':
                 return redirect('/upload/%r' % userid)
             if file:
 
@@ -318,16 +312,16 @@ def upload(userid):
                         continue
                     print(img.size)
                     # then either resixe the image or...
-                    # img = img.resize((512, 512))
+                    img = img.resize((512, 512))
 
                     # Crop the center of the image
-                    new_width, new_height = (512, 512)
-                    left = (width - new_width) / 2
-                    top = (height - new_height) / 2
-                    right = (width + new_width) / 2
-                    bottom = (height + new_height) / 2
+                    # new_width, new_height = (512, 512)
+                    # left = (width - new_width) / 2
+                    # top = (height - new_height) / 2
+                    # right = (width + new_width) / 2
+                    # bottom = (height + new_height) / 2
 
-                    img = img.crop((left, top, right, bottom))
+                    # img = img.crop((left, top, right, bottom))
 
                 # if the image is too small then say it is too small
                 elif width < 256 or height < 256:
@@ -366,6 +360,7 @@ def upload(userid):
                     user_id=userid,
                     image_path=path,
                     # default scan image and notes to nothing for now
+                    # scan_image_path=str(output['scan_img']),
                     scan_image_path='',
                     cancer_class=int(output['cancer_class']),
                     notes=str(output),
@@ -440,6 +435,7 @@ def send_email(scanid):
         msg = Message('%r shared a scan with you: %r' % (user.username, title))
 
         # add the recipient
+        msg.add_recipient(user.email)
         msg.add_recipient(email)
 
         # we will create the email with html so we can add images and attachments

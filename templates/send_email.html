@@ -8,25 +8,16 @@
 {% block body %} 
 <!-- basic stuff in the body -->
 <h1>Share scan {{ scanid }}</h1>
-<div class='form_container'>
+<div class='form_container' style='width: 700px; position: relative; left: 26%;'>
     <form action='/send_email/{{ scan.id }}' method="POST">
-        <a>title</a>
-        <br>
+        <h3>title</h3>
         <input type='text' name='email_title' id='email_title'>
-        <br>
-        <br>
-        <a>email address</a>
-        <br>
+        <h3>email address</h3>
+        <a>a copy is automatically sent to your email</a>
         <input type='text' name='email' id='email'>
-        <br>
-        <br>
-        <a>message</a>
-        <br>
+        <h3>message</h3>
         <textarea name='message' id='message' rows="10" cols=50 placeholder="enter message for email here"></textarea>     
-        <br>
-        <br>
-        <a>notes</a>
-        <br>
+        <h3>notes</h3>
         <textarea name='notes' id='notes' class='notes' rows="10" cols="50">{{scan.notes}}</textarea>
         <br>
         <input type='submit' value='Send'>
