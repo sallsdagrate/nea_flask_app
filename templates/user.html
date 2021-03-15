@@ -133,16 +133,16 @@
                                 {% if user.id %}
                                     <!-- the link includes the userid -->
 
-                                    <div id="{{source}}" class="modal">
+                                    <!-- <div id="{{source}}" class="modal"> -->
                                         <!-- Modal content -->
-                                        <div class="modal-content">
+                                        <!-- <div class="modal-content">
                                             {% set span_id = 'close' + source %}
                                             <span class='close'id={{span_id}}>&times;</span>
                                             <img src="{{source}}"></image>
                                         </div>                
-                                    </div>
+                                    </div> -->
                                     
-                                    <a class="img" id='{{ source}}'>
+                                    <a class="img" id='{{ source}}' href='/view/{{user.id}}/{{image.id}}'>
                                         <image src='{{ source }}' width=250></image>
                                     </a>
                                 {% else %}

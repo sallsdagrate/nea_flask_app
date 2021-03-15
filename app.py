@@ -123,8 +123,7 @@ def index():
                     # create a new user
                     new_user = Users(username=new_username,
                                      password=new_password,
-                                     email=new_email,
-                                     pfp_path=None)
+                                     email=new_email)
                     try:
                         # try adding to the database
                         db.session.add(new_user)
@@ -361,7 +360,7 @@ def upload(userid):
                     image_path=path,
                     # default scan image and notes to nothing for now
                     # scan_image_path=str(output['scan_img']),
-                    scan_image_path='',
+                    scan_image_path=path.rstrip('.png') + 'scan.png',
                     cancer_class=int(output['cancer_class']),
                     notes=str(output),
                     date_time_added=now)
@@ -446,6 +445,9 @@ def send_email(scanid):
         # add attachments
         with app.open_resource('.' + scan.image_path) as fp:
             msg.attach("scan.png", "image/png", fp.read())
+
+        with app.open_resource('.' + scan.scan_image_path) as fp:
+            msg.attach("scan_edges.png", "image/png", fp.read())
 
         # sends the message
         mail.send(msg)

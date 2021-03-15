@@ -89,11 +89,14 @@ def image_loader(image_name):
     image = Image.open(image_name).convert(mode='RGB')
     image = np.asarray(image)
 
-    isGrey = isGreyscale(image_name)
-    if isGrey:
-        scanFileName = image_name.rstrip('.png') + 'scan.png'
+    edges = filters.sobel(image)
+    scanFileName = image_name.rstrip('.png') + 'scan.png'
+    plt.imsave(scanFileName, edges)
+    # isGrey = isGreyscale(image_name)
+    # if isGrey:
+    #     scanFileName = image_name.rstrip('.png') + 'scan.png'
 
-        plt.imsave(scanFileName, image)
+    #     plt.imsave(scanFileName, image)
 
     # crops to image size and transforms into tensor
     image = loader(image).float()
