@@ -86,12 +86,14 @@ loader = transforms.ToTensor()
 
 def image_loader(image_name):
     # load image with pillow
-    image = Image.open(image_name).convert(mode='RGB')
+    image = Image.open(image_name).convert(mode='I')
     image = np.asarray(image)
 
-    edges = filters.sobel(image)
+    # edges = filters.sobel(image)
     scanFileName = image_name.rstrip('.png') + 'scan.png'
-    plt.imsave(scanFileName, edges)
+    # plt.imsave(scanFileName, edges)
+    plt.imsave(scanFileName, image)
+    image = Image.open(scanFileName).convert(mode='RGB')
     # isGrey = isGreyscale(image_name)
     # if isGrey:
     #     scanFileName = image_name.rstrip('.png') + 'scan.png'

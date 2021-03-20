@@ -18,7 +18,7 @@
         <h3>message</h3>
         <textarea name='message' id='message' rows="10" cols=50 placeholder="enter message for email here"></textarea>     
         <h3>notes</h3>
-        <textarea name='notes' id='notes' class='notes' rows="10" cols="50">{{scan.notes}}</textarea>
+        <textarea readonly name='notes' id='notes' class='notes' rows="10" cols="50">{{scan.notes}}</textarea>
         <br>
         <input type='submit' value='Send'>
     </form>
@@ -26,5 +26,8 @@
 <br>
 <a>Attachments </a>
 <br>
-<img src={{scan.image_path}}/>
+<img src={{scan.image_path}} width='50%'>
+<br>
+<br>
+<img src={{scan.scan_image_path}} width="50%" atl='scan'>
 {% endblock %}
