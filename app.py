@@ -449,8 +449,6 @@ def send_email(scanid):
         with app.open_resource('.' + scan.scan_image_path) as fp:
             msg.attach("scan_edges.png", "image/png", fp.read())
 
-        # sends the message
-        mail.send(msg)
         # if we see this then the message sending was successful
         return render_template('message_sent.html',
                                user=user,
